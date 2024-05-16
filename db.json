@@ -5,7 +5,7 @@
       "createdAt": 1712662545953,
       "name": "Sprawdz czy temperatura numer 0 wynosi między 0 a 6 stopni",
       "done": false,
-      "dueTime": 15
+      "dueTime": 15.00
     },
     {
       "id": "e40c",
