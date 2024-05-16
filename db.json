@@ -3,105 +3,93 @@
     {
       "id": "e40b",
       "createdAt": 1712662545953,
-      "name": "Sprawdz czy temperatura lodówki numer 0 oraz 4 wynosi między 0 a 6 stopni",
+      "name": "Sprawdź, czy temperatura lodówki nr 0 i nr 4 wynosi między 0, a 6 stopni.",
       "done": false,
       "dueTime": 15
     },
     {
       "id": "e40d",
       "createdAt": 1712662545953,
-      "name": "Sprawdz czy temperatury zamrażarek numer 1 i 2 wynoszą między -18 a -25 stopni",
+      "name": "Sprawdź, czy temperatury zamrażarek nr 1 i nr 2 wynoszą między -18, a -25 stopni.",
       "done": false,
       "dueTime": 15
     },
-    {
-      "id": "e40f",
-      "createdAt": 1712662545953,
-      "name": "Sprawdz czy temperatura konserwatora wynosi między -12 a -15 stopni",
-      "done": false,
-      "dueTime": 15
-    },
+
     {
       "id": "e40g",
       "createdAt": 1712662545953,
-      "name": "Sprawdz czy temperatura konserwatora wynosi między -12 a -15 stopni",
+      "name": "Sprawdź, czy temperatura konserwatora wynosi między -12, a -15 stopni.",
       "done": false,
       "dueTime": 15
     },
    {
       "id": "e40h",
       "createdAt": 1712662545953,
-      "name": "Uzupełni wafelki,kubeczki i boksy (jeśli trzeba)",
+      "name": "Uzupełnij wafelki, kubeczki i boksy (jeśli trzeba).",
       "done": false,
       "dueTime": 15
     },
     {
       "id": "e40i",
       "createdAt": 1712662545953,
-      "name": "Sprawdź poprawność tablicy smaków z zawarością konserwatora",
+      "name": "Sprawdź poprawność tablicy smaków z zawarością konserwatora.",
       "done": false,
       "dueTime": 15
     },
     {
       "id": "e40j",
       "createdAt": 1712662545953,
-      "name": "Wprowadaź kubły na śmieci(jeśli poprzedniego dnia zostały wystawione)",
+      "name": "Wprowadź kubły na śmieci (jeśli poprzedniego dnia zostały wystawione).",
       "done": false,
       "dueTime": 16
     },
     {
       "id": "e40k",
       "createdAt": 1712662545953,
-      "name": "Ponownie skontroluj temperatury urządzeń chłodniczych",
+      "name": "Ponownie skontroluj temperatury urządzeń chłodniczych.",
       "done": false,
       "dueTime": 18
     },
     {
       "id": "e40l",
       "createdAt": 1712662545953,
-      "name": "Porównaj liste zapotrzebowania z produktami które mamy na stanie (na lokalu oraz w przyczepie). Braki wpisz do odpowiedniej tabeli w excelu",
+      "name": "Porównaj liste zapotrzebowania z produktami, które mamy na stanie (na lokalu oraz w przyczepie). Braki wpisz do odpowiedniej tabeli w excelu.",
       "done": false,
       "dueTime": 18
     },
     {
       "id": "e40m",
       "createdAt": 1712662545953,
-      "name": "Wystaw kubły ze śmieciami jeśli zgodnie z harmonogramem następnego dnia odbywa sie odbiór",
+      "name": "Wystaw kubły ze śmieciami, jeśli zgodnie z harmonogramem następnego dnia odbywa sie odbiór.",
       "done": false,
       "dueTime": 21
     },
-    {
-      "id": "e40n",
-      "createdAt": 1712662545953,
-      "name": "Wystaw kubły ze śmieciami jeśli zgodnie z harmonogramem następnego dnia odbywa sie odbiór",
-      "done": false,
-      "dueTime": 20
-    },
+  
     {
       "id": "e40o",
       "createdAt": 1712662545953,
-      "name": "Wykonaj obowiązki przydzielone na dany dzień tygodnia (z listy wiszącej na lokalu)",
+      "name": "Wykonaj obowiązki przydzielone na dany dzień tygodnia (z listy wiszącej na lokalu).",
       "done": false,
       "dueTime": 20
     },
     {
       "id": "e40p",
       "createdAt": 1712662545953,
-      "name": "Wyślij na grupe zdjęcia tablic z zamrażarek, tabelki w zeszycie i raportu",
+      "name": "Wyślij na grupę na whatsappie zdjęcia tablic z zamrażarek, tabelki w zeszycie i raportu.",
       "done": false,
       "dueTime": 21
     },
     {
       "id": "e40r",
       "createdAt": 1712662545953,
-      "name": "Upewnij się że jest wyłączona woda oraz zamknięte tylne drzwi na klucz",
+      "name": "Upewnij się, że jest wyłączona woda oraz zamknięte tylne drzwi na klucz.",
       "done": false,
       "dueTime": 21
     },
     {
       "id": "e40p",
       "createdAt": 1712662545953,
-      "name": "Przed wyjściem upewnij się że temperatury urządzeń chłodniczych są odpowiednie",
+      "name": "Przed wyjściem upewnij się, że temperatury urządzeń chłodniczych są odpowiednie.",
       "done": false,
       "dueTime": 21
     }
