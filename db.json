@@ -53,12 +53,18 @@
     {
       "id": "e40l",
       "createdAt": 1712662545953,
-      "name": "Porównaj liste zapotrzebowania z produktami, które mamy na stanie (na lokalu oraz w przyczepie). Braki wpisz do odpowiedniej tabeli w excelu.",
+      "name": "Porównaj liste zapotrzebowania z produktami, które mamy na stanie (na lokalu oraz w przyczepie). Braki wpisz do odpowiedniej tabeli w excelu oraz w pole poniżej klikając w nie dwukrotnie",
       "done": false,
       "dueTime": 18
-    },
+    }, 
     {
-      "id": "e40m",
+      "id": "e40r",
+      "createdAt": 1712662545953,
+      "name": ""
+  
+    }, 
+    {
+      "id": "e40m", 
       "createdAt": 1712662545953,
       "name": "Wystaw kubły ze śmieciami, jeśli zgodnie z harmonogramem następnego dnia odbywa sie odbiór.",
       "done": false,
