@@ -53,16 +53,11 @@
     {
       "id": "e40l",
       "createdAt": 1712662545953,
-      "name": "Porównaj liste zapotrzebowania z produktami, które mamy na stanie (na lokalu oraz w przyczepie). Braki wpisz do odpowiedniej tabeli w excelu oraz w pole poniżej klikając w nie dwukrotnie",
+      "name": "Porównaj liste zapotrzebowania z produktami, które mamy na stanie (na lokalu oraz w przyczepie). Braki wpisz do odpowiedniej tabeli w excelu.",
       "done": false,
       "dueTime": 18
     }, 
-    {
-      "id": "e40s",
-      "createdAt": 1712662545953,
-      "name": ""
-  
-    }, 
+ 
     {
       "id": "e40m", 
       "createdAt": 1712662545953,
