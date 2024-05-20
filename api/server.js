@@ -4,100 +4,108 @@ const bodyParser = require('body-parser');
 
 const server = jsonServer.create();
 const middlewares = jsonServer.defaults();
-
-// Middleware to parse JSON bodies
 server.use(bodyParser.json());
 server.use(middlewares);
 
-// Middleware to authenticate requests
-server.use(async (req, res, next) => {
-    const token = process.env.GITHUB_TOKEN;
-    if (!token) {
-        return res.status(401).json({ error: 'GitHub token is missing' });
-    }
-    req.headers.Authorization = `token ${token}`;
-    next();
-});
+// Ustaw zmienne środowiskowe
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_REPO = process.env.GITHUB_REPO;
+const GITHUB_FILE_PATH = process.env.GITHUB_FILE_PATH;
 
-// GitHub repo details
-const repo = process.env.GITHUB_REPO;
-const filePath = process.env.GITHUB_FILE_PATH;
-
-// Function to fetch data from GitHub
-const fetchDataFromGitHub = async () => {
-    try {
-        const { data } = await axios.get(`https://api.github.com/repos/${repo}/contents/${filePath}`);
-        return Buffer.from(data.content, 'base64').toString();
-    } catch (error) {
-        console.error('Error fetching data from GitHub:', error.response.data);
-        throw new Error('Error fetching data from GitHub');
-    }
-};
-
-// Function to save data to GitHub
-const saveDataToGitHub = async (data) => {
-    try {
-        const content = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
-        const { data: fileData } = await axios.get(`https://api.github.com/repos/${repo}/contents/${filePath}`);
-        await axios.put(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-            message: 'Update data',
-            content: content,
-            sha: fileData.sha,
-        });
-        console.log('Data has been written to GitHub');
-    } catch (error) {
-        console.error('Error writing to GitHub:', error.response.data);
-        throw new Error('Error writing to GitHub');
-    }
-};
-
-// Endpoint to get all tasks
+// Endpoint do pobierania danych
 server.get('/api/tasks', async (req, res) => {
     try {
-        const dbData = await fetchDataFromGitHub();
-        res.jsonp(JSON.parse(dbData).tasks);
+        const response = await axios.get(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+        const content = Buffer.from(response.data.content, 'base64').toString();
+        const db = JSON.parse(content);
+        res.jsonp(db.tasks);
     } catch (error) {
+        console.error('Error fetching data from GitHub:', error.response.data);
         res.status(500).json({ error: 'Failed to fetch tasks from GitHub' });
     }
 });
 
-// Endpoint to add a new task
+// Endpoint do dodawania nowych danych
 server.post('/api/tasks', async (req, res) => {
     try {
-        const dbData = await fetchDataFromGitHub();
+        const response = await axios.get(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+        const content = Buffer.from(response.data.content, 'base64').toString();
+        const db = JSON.parse(content);
+        
         const newData = req.body;
-        newData.id = JSON.parse(dbData).tasks.length ? JSON.parse(dbData).tasks[JSON.parse(dbData).tasks.length - 1].id + 1 : 1;
-        JSON.parse(dbData).tasks.push(newData);
-        await saveDataToGitHub(JSON.parse(dbData));
+        newData.id = db.tasks.length ? db.tasks[db.tasks.length - 1].id + 1 : 1;
+        db.tasks.push(newData);
+        
+        await axios.put(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+            message: 'Update db.json',
+            content: Buffer.from(JSON.stringify(db, null, 2)).toString('base64'),
+            sha: response.data.sha
+        }, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+
         res.jsonp(newData);
     } catch (error) {
+        console.error('Error adding task to GitHub:', error.response.data);
         res.status(500).json({ error: 'Failed to add task to GitHub' });
     }
 });
 
-// Endpoint to delete a task
+// Endpoint do usuwania danych
 server.delete('/api/tasks/:id', async (req, res) => {
     try {
-        const dbData = await fetchDataFromGitHub();
         const taskId = parseInt(req.params.id);
-        JSON.parse(dbData).tasks = JSON.parse(dbData).tasks.filter(task => task.id !== taskId);
-        await saveDataToGitHub(JSON.parse(dbData));
+        const response = await axios.get(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+        const content = Buffer.from(response.data.content, 'base64').toString();
+        const db = JSON.parse(content);
+
+        db.tasks = db.tasks.filter(task => task.id !== taskId);
+        
+        await axios.put(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+            message: 'Update db.json',
+            content: Buffer.from(JSON.stringify(db, null, 2)).toString('base64'),
+            sha: response.data.sha
+        }, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+
         res.jsonp({ success: true });
     } catch (error) {
+        console.error('Error deleting task from GitHub:', error.response.data);
         res.status(500).json({ error: 'Failed to delete task from GitHub' });
     }
 });
 
-// Endpoint to update a task
+// Endpoint do aktualizowania danych
 server.patch('/api/tasks/:id', async (req, res) => {
     try {
-        const dbData = await fetchDataFromGitHub();
         const taskId = parseInt(req.params.id);
         const updatedData = req.body;
-        JSON.parse(dbData).tasks = JSON.parse(dbData).tasks.map(task => (task.id === taskId ? { ...task, ...updatedData } : task));
-        await saveDataToGitHub(JSON.parse(dbData));
+        const response = await axios.get(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+        const content = Buffer.from(response.data.content, 'base64').toString();
+        const db = JSON.parse(content);
+
+        db.tasks = db.tasks.map(task => (task.id === taskId ? { ...task, ...updatedData } : task));
+
+        await axios.put(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
+            message: 'Update db.json',
+            content: Buffer.from(JSON.stringify(db, null, 2)).toString('base64'),
+            sha: response.data.sha
+        }, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+
         res.jsonp(updatedData);
     } catch (error) {
+        console.error('Error updating task on GitHub:', error.response.data);
         res.status(500).json({ error: 'Failed to update task on GitHub' });
     }
 });
