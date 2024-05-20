@@ -26,16 +26,19 @@ fs.readFile('db.json', 'utf8', (err, data) => {
 });
 
 // Obsługujemy zapisywanie zmian do pliku db.json w przypadku zmian w danych
-router.render = (req, res) => {
-    fs.writeFile('db.json', JSON.stringify(router.db.getState()), 'utf8', (err) => {
-        if (err) {
-            console.error('Error writing db.json:', err);
-        } else {
-            console.log('Data has been written to db.json');
-        }
-    });
-    res.jsonp(res.locals.data);
-};
+server.use((req, res, next) => {
+    router.render = (req, res) => {
+        fs.writeFile('db.json', JSON.stringify(router.db.getState()), 'utf8', (err) => {
+            if (err) {
+                console.error('Error writing db.json:', err);
+            } else {
+                console.log('Data has been written to db.json');
+            }
+        });
+        res.jsonp(res.locals.data);
+    };
+    next();
+});
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
