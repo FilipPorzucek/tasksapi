@@ -40,6 +40,28 @@ server.use((req, res, next) => {
     next();
 });
 
+// Obsługa dodawania nowych danych
+server.post('/api/tasks', (req, res) => {
+    const newData = req.body;
+    router.db.get('tasks').push(newData).write();
+    res.jsonp(newData);
+});
+
+// Obsługa usuwania danych
+server.delete('/api/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    router.db.get('tasks').remove({ id: taskId }).write();
+    res.jsonp({ success: true });
+});
+
+// Obsługa aktualizowania danych
+server.patch('/api/tasks/:id', (req, res) => {
+    const taskId = parseInt(req.params.id);
+    const updatedData = req.body;
+    router.db.get('tasks').find({ id: taskId }).assign(updatedData).write();
+    res.jsonp(updatedData);
+});
+
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
     console.log(`JSON Server is running on port ${port}`);
