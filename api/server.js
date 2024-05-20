@@ -9,6 +9,20 @@ const middlewares = jsonServer.defaults();
 server.use(bodyParser.json());
 server.use(middlewares);
 
+// Ścieżka do pliku db.json (zakładając, że jest poza folderem api)
+const dbFilePath = path.join(__dirname, '..', 'db.json');
+
+// Funkcja do zapisywania danych do pliku db.json
+function saveDataToDB(db) {
+    fs.writeFile(dbFilePath, JSON.stringify(db, null, 2), 'utf8', err => {
+        if (err) {
+            console.error('Error writing db.json:', err);
+        } else {
+            console.log('Data has been written to db.json');
+        }
+    });
+}
+
 // Ustaw zmienne środowiskowe
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPO = process.env.GITHUB_REPO;
@@ -111,6 +125,10 @@ server.patch('/api/tasks/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to update task on GitHub' });
     }
 });
+
+// Wywołaj router JSON Server
+const router = jsonServer.router(dbFilePath);
+server.use(router);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
