@@ -1,27 +1,65 @@
 const jsonServer = require('json-server');
-const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 const server = jsonServer.create();
+const middlewares = jsonServer.defaults();
 
-// Ustaw zmienne środowiskowe
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_REPO = process.env.GITHUB_REPO;
-const GITHUB_FILE_PATH = process.env.GITHUB_FILE_PATH;
+// Ścieżka do pliku db.json (zakładając, że jest poza folderem api)
+const dbFilePath = path.join(__dirname, '..', 'db.json');
 
-// Endpoint do pobierania danych
-server.get('/api/tasks', async (req, res) => {
-    try {
-        const response = await axios.get(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`, {
-            headers: { Authorization: `token ${GITHUB_TOKEN}` }
-        });
-        const content = Buffer.from(response.data.content, 'base64').toString();
-        const db = JSON.parse(content);
-        res.jsonp(db.tasks);
-    } catch (error) {
-        console.error('Error fetching data from GitHub:', error.response.data);
-        res.status(500).json({ error: 'Failed to fetch tasks from GitHub' });
-    }
+// Wczytaj dane z pliku db.json
+const dbData = fs.readFileSync(dbFilePath, 'utf8');
+const db = JSON.parse(dbData);
+
+// Utwórz router JSON Server z danymi z pliku db.json
+const router = jsonServer.router(db);
+
+server.use(middlewares);
+
+// Dodaj rewriter middleware
+server.use(jsonServer.rewriter({
+    '/api/*': '/$1',
+    '/blog/:resource/:id/show': '/:resource/:id'
+}));
+
+// Obsługa dodawania nowych danych
+server.post('/api/tasks', (req, res, next) => {
+    const newData = req.body;
+    db.tasks.push(newData);
+    saveDataToDB();
+    res.jsonp(newData);
 });
+
+// Obsługa usuwania danych
+server.delete('/api/tasks/:id', (req, res, next) => {
+    const taskId = parseInt(req.params.id);
+    db.tasks = db.tasks.filter(task => task.id !== taskId);
+    saveDataToDB();
+    res.jsonp({ success: true });
+});
+
+// Obsługa aktualizowania danych
+server.patch('/api/tasks/:id', (req, res, next) => {
+    const taskId = parseInt(req.params.id);
+    const updatedData = req.body;
+    db.tasks = db.tasks.map(task => (task.id === taskId ? { ...task, ...updatedData } : task));
+    saveDataToDB();
+    res.jsonp(updatedData);
+});
+
+// Funkcja do zapisywania danych do pliku db.json
+function saveDataToDB() {
+    fs.writeFile(dbFilePath, JSON.stringify(db, null, 2), 'utf8', err => {
+        if (err) {
+            console.error('Error writing db.json:', err);
+        } else {
+            console.log('Data has been written to db.json');
+        }
+    });
+}
+
+server.use(router);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
