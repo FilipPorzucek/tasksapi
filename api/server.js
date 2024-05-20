@@ -25,25 +25,22 @@ fs.readFile('db.json', 'utf8', (err, data) => {
     console.log('Data has been read from db.json');
 });
 
-// Obsługujemy zapisywanie zmian do pliku db.json w przypadku zmian w danych
-server.use((req, res, next) => {
-    router.render = (req, res) => {
-        fs.writeFile('db.json', JSON.stringify(router.db.getState()), 'utf8', (err) => {
-            if (err) {
-                console.error('Error writing db.json:', err);
-            } else {
-                console.log('Data has been written to db.json');
-            }
-        });
-        res.jsonp(res.locals.data);
-    };
-    next();
-});
+// Funkcja do zapisywania danych do pliku db.json
+function saveDataToDB() {
+    fs.writeFile('db.json', JSON.stringify(router.db.getState()), 'utf8', (err) => {
+        if (err) {
+            console.error('Error writing db.json:', err);
+        } else {
+            console.log('Data has been written to db.json');
+        }
+    });
+}
 
 // Obsługa dodawania nowych danych
 server.post('/api/tasks', (req, res) => {
     const newData = req.body;
     router.db.get('tasks').push(newData).write();
+    saveDataToDB();
     res.jsonp(newData);
 });
 
@@ -51,6 +48,7 @@ server.post('/api/tasks', (req, res) => {
 server.delete('/api/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
     router.db.get('tasks').remove({ id: taskId }).write();
+    saveDataToDB();
     res.jsonp({ success: true });
 });
 
@@ -59,6 +57,7 @@ server.patch('/api/tasks/:id', (req, res) => {
     const taskId = parseInt(req.params.id);
     const updatedData = req.body;
     router.db.get('tasks').find({ id: taskId }).assign(updatedData).write();
+    saveDataToDB();
     res.jsonp(updatedData);
 });
 
