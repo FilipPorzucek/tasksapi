@@ -7,6 +7,14 @@ const middlewares = jsonServer.defaults();
 server.use(bodyParser.json());
 server.use(middlewares);
 
+// Dodaj middleware dla obsługi nagłówków CORS
+server.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+
 // Ustaw zmienne środowiskowe
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPO = process.env.GITHUB_REPO;
