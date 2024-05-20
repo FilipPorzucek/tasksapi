@@ -15,21 +15,31 @@ server.use(jsonServer.rewriter({
 }));
 server.use(router);
 
-// Wyłączamy zapisywanie do pliku db.json po każdym uruchomieniu serwera
-// Czytamy dane z pliku db.json tylko raz, przy uruchomieniu serwera
+// Wczytujemy dane z pliku db.json tylko raz, przy uruchomieniu serwera
 let dataRead = false;
+fs.readFile('db.json', 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error reading db.json:', err);
+        return;
+    }
+    router.db.setState(JSON.parse(data));
+    dataRead = true;
+    console.log('Data has been read from db.json');
+});
 
-if (!dataRead) {
-    fs.readFile('db.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading db.json:', err);
-            return;
-        }
-        router.db.setState(JSON.parse(data));
-        dataRead = true;
-        console.log('Data has been read from db.json');
-    });
-}
+// Obsługujemy zapisywanie zmian do pliku db.json w przypadku zmian w danych
+router.render = (req, res) => {
+    if (dataRead) {
+        fs.writeFile('db.json', JSON.stringify(router.db.getState()), 'utf8', (err) => {
+            if (err) {
+                console.error('Error writing db.json:', err);
+            } else {
+                console.log('Data has been written to db.json');
+            }
+        });
+    }
+    res.jsonp(res.locals.data);
+};
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
